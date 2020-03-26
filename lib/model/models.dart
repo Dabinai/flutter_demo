@@ -29,7 +29,7 @@ class BannerModel {
   }
 }
 
-
+////==================================================================
 
 class ReposModel {
   int id;
@@ -96,6 +96,21 @@ class ReposModel {
   }
 }
 
+
+class ReposListModel{
+  List<ReposModel> data;
+  ReposListModel(this.data);
+
+
+  factory ReposListModel.fromJson(List json){
+    return ReposListModel(
+      json.map((e) => ReposModel.fromJson(((e)))).toList()
+    );
+  }
+}
+
+
+////==================================================================
 
 
 abstract class ISuspensionBean {
