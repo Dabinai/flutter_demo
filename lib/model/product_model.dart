@@ -1,26 +1,26 @@
 // To parse this JSON data, do
 //
-//     final homeData = homeDataFromJson(jsonString);
+//     final productData = productDataFromJson(jsonString);
 
 import 'dart:convert';
 
-HomeData homeDataFromJson(String str) => HomeData.fromJson(json.decode(str));
+ProductData productDataFromJson(String str) => ProductData.fromJson(json.decode(str));
 
-String homeDataToJson(HomeData data) => json.encode(data.toJson());
+String productDataToJson(ProductData data) => json.encode(data.toJson());
 
-class HomeData {
-  HomeDataData data;
+class ProductData {
+  ProductDataData data;
   int errorCode;
   String errorMsg;
 
-  HomeData({
+  ProductData({
     this.data,
     this.errorCode,
     this.errorMsg,
   });
 
-  factory HomeData.fromJson(Map<String, dynamic> json) => HomeData(
-    data: HomeDataData.fromJson(json["data"]),
+  factory ProductData.fromJson(Map<String, dynamic> json) => ProductData(
+    data: ProductDataData.fromJson(json["data"]),
     errorCode: json["errorCode"],
     errorMsg: json["errorMsg"],
   );
@@ -32,16 +32,16 @@ class HomeData {
   };
 }
 
-class HomeDataData {
+class ProductDataData {
   int curPage;
-  List<DataElement> datas;
+  List<DataProductElement> datas;
   int offset;
   bool over;
   int pageCount;
   int size;
   int total;
 
-  HomeDataData({
+  ProductDataData({
     this.curPage,
     this.datas,
     this.offset,
@@ -51,9 +51,9 @@ class HomeDataData {
     this.total,
   });
 
-  factory HomeDataData.fromJson(Map<String, dynamic> json) => HomeDataData(
+  factory ProductDataData.fromJson(Map<String, dynamic> json) => ProductDataData(
     curPage: json["curPage"],
-    datas: List<DataElement>.from(json["datas"].map((x) => DataElement.fromJson(x))),
+    datas: List<DataProductElement>.from(json["datas"].map((x) => DataProductElement.fromJson(x))),
     offset: json["offset"],
     over: json["over"],
     pageCount: json["pageCount"],
@@ -72,13 +72,13 @@ class HomeDataData {
   };
 }
 
-class DataElement {
+class DataProductElement {
   String apkLink;
   int audit;
   String author;
   bool canEdit;
   int chapterId;
-  String chapterName;
+  ChapterName chapterName;
   bool collect;
   int courseId;
   String desc;
@@ -97,7 +97,7 @@ class DataElement {
   int shareDate;
   String shareUser;
   int superChapterId;
-  String superChapterName;
+  SuperChapterName superChapterName;
   List<Tag> tags;
   String title;
   int type;
@@ -105,7 +105,7 @@ class DataElement {
   int visible;
   int zan;
 
-  DataElement({
+  DataProductElement({
     this.apkLink,
     this.audit,
     this.author,
@@ -139,13 +139,13 @@ class DataElement {
     this.zan,
   });
 
-  factory DataElement.fromJson(Map<String, dynamic> json) => DataElement(
+  factory DataProductElement.fromJson(Map<String, dynamic> json) => DataProductElement(
     apkLink: json["apkLink"],
     audit: json["audit"],
     author: json["author"],
     canEdit: json["canEdit"],
     chapterId: json["chapterId"],
-    chapterName: json["chapterName"],
+    chapterName: chapterNameValues.map[json["chapterName"]],
     collect: json["collect"],
     courseId: json["courseId"],
     desc: json["desc"],
@@ -161,10 +161,10 @@ class DataElement {
     projectLink: json["projectLink"],
     publishTime: json["publishTime"],
     selfVisible: json["selfVisible"],
-    shareDate: json["shareDate"],
+    shareDate: json["shareDate"] == null ? null : json["shareDate"],
     shareUser: json["shareUser"],
     superChapterId: json["superChapterId"],
-    superChapterName: json["superChapterName"],
+    superChapterName: superChapterNameValues.map[json["superChapterName"]],
     tags: List<Tag>.from(json["tags"].map((x) => Tag.fromJson(x))),
     title: json["title"],
     type: json["type"],
@@ -179,7 +179,7 @@ class DataElement {
     "author": author,
     "canEdit": canEdit,
     "chapterId": chapterId,
-    "chapterName": chapterName,
+    "chapterName": chapterNameValues.reverse[chapterName],
     "collect": collect,
     "courseId": courseId,
     "desc": desc,
@@ -195,10 +195,10 @@ class DataElement {
     "projectLink": projectLink,
     "publishTime": publishTime,
     "selfVisible": selfVisible,
-    "shareDate": shareDate,
+    "shareDate": shareDate == null ? null : shareDate,
     "shareUser": shareUser,
     "superChapterId": superChapterId,
-    "superChapterName": superChapterName,
+    "superChapterName": superChapterNameValues.reverse[superChapterName],
     "tags": List<dynamic>.from(tags.map((x) => x.toJson())),
     "title": title,
     "type": type,
@@ -208,9 +208,21 @@ class DataElement {
   };
 }
 
+enum ChapterName { EMPTY }
+
+final chapterNameValues = EnumValues({
+  "完整项目": ChapterName.EMPTY
+});
+
+enum SuperChapterName { TAB }
+
+final superChapterNameValues = EnumValues({
+  "开源项目主Tab": SuperChapterName.TAB
+});
+
 class Tag {
-  String name;
-  String url;
+  Name name;
+  Url url;
 
   Tag({
     this.name,
@@ -218,12 +230,38 @@ class Tag {
   });
 
   factory Tag.fromJson(Map<String, dynamic> json) => Tag(
-    name: json["name"],
-    url: json["url"],
+    name: nameValues.map[json["name"]],
+    url: urlValues.map[json["url"]],
   );
 
   Map<String, dynamic> toJson() => {
-    "name": name,
-    "url": url,
+    "name": nameValues.reverse[name],
+    "url": urlValues.reverse[url],
   };
+}
+
+enum Name { EMPTY }
+
+final nameValues = EnumValues({
+  "项目": Name.EMPTY
+});
+
+enum Url { PROJECT_LIST_1_CID_294 }
+
+final urlValues = EnumValues({
+  "/project/list/1?cid=294": Url.PROJECT_LIST_1_CID_294
+});
+
+class EnumValues<T> {
+  Map<String, T> map;
+  Map<T, String> reverseMap;
+
+  EnumValues(this.map);
+
+  Map<T, String> get reverse {
+    if (reverseMap == null) {
+      reverseMap = map.map((k, v) => new MapEntry(v, k));
+    }
+    return reverseMap;
+  }
 }

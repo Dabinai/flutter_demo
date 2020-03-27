@@ -30,7 +30,7 @@ class _LoadingState extends State<LoadingPage>{
             ),
             Center(
               child: Text(
-                "Flutter Studio",
+                "Flutter Demo",
                 style: TextStyle(
                   color: Colors.amber,
                   fontSize: 36.0,
